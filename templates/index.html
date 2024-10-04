@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Database APP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> <!-- Ensure this path is correct -->
+</head>
+<body>
+    <header>
+        <h1>Movie Database</h1>
+		<p>Browse, search, and rate your favorite movies!</p>
+    </header>
+    <main>
+		<div class="search-form">
+			<h2>Search Movies</h2>
+			<form method="POST" action="{{ url_for('search_movies') }}">
+				<input type="text" name="query" placeholder="Enter your movie title" required>
+				<input type="submit" value="Search">
+			</form>
+		</div>
+		
+		<div class="movie-info">
+			{% if error %}
+				<p class="error">{{ error }}</p>
+			{% elif movies %}
+				<h3>Search Results</h3>
+				<div class="movie-list">
+					{% for movie in movies %}
+						<div class="movie-item">
+							<h3>{{ movie.title }}</h3>
+							<p>Release Date: {{ movie.release_date }}</p>
+							<p>Overview: {{ movie.overview }}</p>
+							{% if movie.poster_path %}
+								<img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="Poster">
+							{% else %}
+								<p>No poster available.</p>
+							{% endif %}
+							<a href="{{ url_for('movie_details', movie_id=movie.id) }}">View Details</a>
+						</div>
+					{% endfor %}
+				</div>
+			{% elif movie %}
+				<h2>{{ movie.title }}</h2>
+				<p>Release Date: {{ movie.release_date }}</p>
+				<p>Overview: {{ movie.overview }}</p>
+				{% if movie.poster_path %}
+					<img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="Poster">
+				{% else %}
+					<p>No poster available.</p>
+				{% endif %}
+				<p>Average Rating: {{ movie.vote_average }}</p>
+				<p>Vote Count: {{ movie.vote_count }}</p>
+			{% endif %}
+		</div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Movie Database APP. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
